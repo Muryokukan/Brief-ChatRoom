@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Catroom {{ id }}{% endblock %}
+{% block title %}{{ roomName }}#{{ roomId }}{% endblock %}
 
 {% block body %}
 {# Wrapper #}
@@ -8,19 +8,26 @@
 
     {# Chat Section #}
     <div class="flex-1 overflow-y-auto p-8">
-        {# Message #}
+        {# Message exemple
         <div class="flex-col">
             <span class="font-mono">Username#1</span>
             <div class="bg-blue-700 p-4 rounded-md w-fit max-w-7xl rounded-tl-none">
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere velit et sapien rhoncus cursus. Sed scelerisque neque vel nulla pretium, eu tincidunt metus eleifend. Nulla facilisi. Duis a libero ultricies, rutrum mi a, convallis est. Nam finibus tortor et ante hendrerit rhoncus. Cras at faucibus dolor, at consequat velit. Maecenas vitae velit nibh.
             </div>
         </div>
+        #}
 
         {# Message #}
         {% for message in messages %}
-        <div class="flex-col w-full justify-items-end">
+        <div class="flex-col w-full {{ app.user.id == message.getUser().getId() ? 'justify-items-end' }}">
             <span class="font-mono">{{ message.getUser().getNickname() }}#{{ message.getUser().getId() }}</span>
-            <div class="bg-blue-700 p-4 rounded-md w-fit max-w-7xl rounded-tr-none ">
+            <div class="p-4 rounded-lg w-fit max-w-7xl
+                {% if app.user.id == message.getUser().getId() %}
+                bg-slate-300 text-black rounded-tr-none justify-items-end
+                {% else %}
+                bg-blue-700 rounded-tl-none
+                {% endif %}
+                ">
                 {{ message.getContent() }}
             </div>
         </div>
