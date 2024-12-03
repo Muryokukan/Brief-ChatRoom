@@ -6,13 +6,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use App\Repository\MessageRepository;
+
 class RoomController extends AbstractController
 {
-    #[Route('/room', name: 'app_room')]
-    public function index(): Response
+    #[Route('/room/{id}', name: 'app_room')]
+    public function index(int $id, MessageRepository $messageRepo): Response
     {
+        $messages = $messageRepo->findBy([
+            "room" => $id
+        ]);
         return $this->render('room/index.html.twig', [
-            'controller_name' => 'RoomController',
+            'id' => $id,
+            "messages" => $messages
         ]);
     }
 }

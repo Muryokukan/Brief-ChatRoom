@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Chatroom{% endblock %}
+{% block title %}Catroom {{ id }}{% endblock %}
 
 {% block body %}
 {# Wrapper #}
@@ -15,6 +15,16 @@
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere velit et sapien rhoncus cursus. Sed scelerisque neque vel nulla pretium, eu tincidunt metus eleifend. Nulla facilisi. Duis a libero ultricies, rutrum mi a, convallis est. Nam finibus tortor et ante hendrerit rhoncus. Cras at faucibus dolor, at consequat velit. Maecenas vitae velit nibh.
             </div>
         </div>
+
+        {# Message #}
+        {% for message in messages %}
+        <div class="flex-col w-full justify-items-end">
+            <span class="font-mono">{{ message.getUser().getNickname() }}#{{ message.getUser().getId() }}</span>
+            <div class="bg-blue-700 p-4 rounded-md w-fit max-w-7xl rounded-tr-none ">
+                {{ message.getContent() }}
+            </div>
+        </div>
+        {% endfor %}
     </div>
 
     {# Interaction Section #}
