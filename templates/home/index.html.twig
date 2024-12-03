@@ -1,20 +1,91 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Page d'Accueil{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    
+    <body class="bg-gray-100">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="container mx-auto px-16">
+        <h1 class="text-3xl font-bold text-center mb-6">Bienvenue sur notre page d'accueil</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/sauro/Documents/GitHub/Brief-ChatRoom/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/sauro/Documents/GitHub/Brief-ChatRoom/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+        <div id="boxContainer" class="flex flex-row space-x-6 mb-4">
+            {% for room in rooms  %}
+
+             {{ include('room/show.html.twig') }}
+
+             {% endfor %}
+
+            <div id="addBoxBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-48 h-48 rounded-lg shadow-md flex items-center justify-center cursor-pointer">
+                Créer une Room
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
+
+    <!-- Pop-up -->
+    <div id="popup" class="fixed inset-0 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-96 relative">
+            <!-- Bouton de fermeture en haut à droite -->
+            <button id="closePopup" class="absolute top-2 right-2 text-red-500 font-bold">X</button>
+            <h1 class="text-xl font-bold mb-4">Créer une nouvelle Room</h1>
+            {{ include('room/create.html.twig') }}
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+        document.getElementById('addBoxBtn').addEventListener('click', function() {
+            document.getElementById('overlay').classList.remove('hidden');
+            document.getElementById('popup').classList.remove('hidden');
+        });
+
+        document.getElementById('closePopup').addEventListener('click', function() {
+            document.getElementById('overlay').classList.add('hidden');
+            document.getElementById('popup').classList.add('hidden');
+        });
+
+        // Optionnel : Fermer la pop-up en cliquant sur l'overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            this.classList.add('hidden');
+            document.getElementById('popup').classList.add('hidden');
+        });
+        
+        function removeBox(button) {
+            // Fonction pour supprimer une boîte
+            const box = button.parentElement;
+            box.remove();
+        }
+    </script>
+</body>
+
+
+{# let boxCount = 1;
+
+        function addBox() {
+            boxCount++;
+            const newBox = document.createElement('div');
+            newBox.className = 'bg-white p-4 rounded-lg shadow-md w-48 h-48 flex flex-col justify-between items-center relative py-12';
+            newBox.innerHTML = `
+                <button class="absolute top-2 right-2 text-red-500 font-bold" onclick="removeBox(this)">X</button>
+                <h2 class="text-xl font-semibold mb-2 text-center">Boîte ${boxCount}</h2>
+                <p class="text-gray-700 text-sm text-center">
+                    lorem lorem lorem
+                </p>
+            `;
+            
+            const addBtn = document.getElementById('addBoxBtn');
+            addBtn.parentNode.insertBefore(newBox, addBtn);
+        }
+
+        function removeBox(button) {
+            button.parentElement.remove();
+        }
+
+        document.getElementById('addBoxBtn').addEventListener('click', addBox); #}
+        </script>
+
 {% endblock %}

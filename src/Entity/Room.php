@@ -15,8 +15,11 @@ class Room
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 32, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $details = null;
 
     /**
      * @var Collection<int, User>
@@ -49,7 +52,17 @@ class Room
     public function setName(?string $name): static
     {
         $this->name = $name;
+        return $this;
+    }
 
+    public function getDetails(): ?string
+    {
+        return $this->details;
+    }
+
+    public function setDetails(?string $details): static
+    {
+        $this->details = $details;
         return $this;
     }
 
@@ -66,14 +79,12 @@ class Room
         if (!$this->users->contains($user)) {
             $this->users->add($user);
         }
-
         return $this;
     }
 
     public function removeUser(User $user): static
     {
         $this->users->removeElement($user);
-
         return $this;
     }
 
@@ -91,19 +102,16 @@ class Room
             $this->messages->add($message);
             $message->setRoom($this);
         }
-
         return $this;
     }
 
     public function removeMessage(Message $message): static
     {
         if ($this->messages->removeElement($message)) {
-            // set the owning side to null (unless already changed)
             if ($message->getRoom() === $this) {
                 $message->setRoom(null);
             }
         }
-
         return $this;
     }
 }
