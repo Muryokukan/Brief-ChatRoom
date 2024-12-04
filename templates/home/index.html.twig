@@ -62,30 +62,4 @@
     </script>
 </body>
 
-
-{# let boxCount = 1;
-
-        function addBox() {
-            boxCount++;
-            const newBox = document.createElement('div');
-            newBox.className = 'bg-white p-4 rounded-lg shadow-md w-48 h-48 flex flex-col justify-between items-center relative py-12';
-            newBox.innerHTML = `
-                <button class="absolute top-2 right-2 text-red-500 font-bold" onclick="removeBox(this)">X</button>
-                <h2 class="text-xl font-semibold mb-2 text-center">Boîte ${boxCount}</h2>
-                <p class="text-gray-700 text-sm text-center">
-                    lorem lorem lorem
-                </p>
-            `;
-            
-            const addBtn = document.getElementById('addBoxBtn');
-            addBtn.parentNode.insertBefore(newBox, addBtn);
-        }
-
-        function removeBox(button) {
-            button.parentElement.remove();
-        }
-
-        document.getElementById('addBoxBtn').addEventListener('click', addBox); #}
-        </script>
-
 {% endblock %}
