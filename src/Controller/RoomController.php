@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Room;
 use App\Form\RoomType;
+use App\Entity\Message;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,16 +33,7 @@ class RoomController extends AbstractController
         
         $room = $roomRepo->find($roomId);
 
-        $isMember = false;
-        $userIdentifier = $user->getUserIdentifier();
-        foreach ($room->getUsers() as $member) {
-            if ($user->getUserIdentifier() == $userIdentifier) {
-                $isMember = true;
-                break;
-            }
-        }
-        
-        if (!$isMember) {
+        if (!$user->canAccessRoom($roomId)) {
             return $this->redirectToRoute('app_home');
         }
 
@@ -99,16 +92,53 @@ class RoomController extends AbstractController
         ]);
     }
 
-    #[Route('/room/{id}/publish', name: 'room_publish')]
-    public function publish(HubInterface $hub): Response
+    // TODO: Once done testing, remove the GET method.
+    #[Route('/room/{roomId}/publish', name: 'room_publish', methods: ['GET', 'POST'])]
+    public function publish(
+        int $roomId,
+        HubInterface $hub,
+        RoomRepository $roomRepo,
+        Security $security,
+        EntityManagerInterface $entityManager
+        ): Response
     {
+        $user = $security->getUser();
+
+        if ($user === null) {
+            return $this->redirectToRoute('app_login');
+        }
+        
+        if (!$user->canAccessRoom($roomId)) {
+            return new Response('', Response::HTTP_FORBIDDEN);
+        }
+
+        $message = new Message();
+
+        $room = $roomRepo->find($roomId);
+
+        // TODO: Somehow get the content out of a post request.
+        $content = 'SET CONTENT';
+        $message->setContent($content);
+        $message->setRoom($room);
+        $message->setUser($user);
+
+        $entityManager->persist($message);
+        $entityManager->flush();
+
         $update = new Update(
-            'room/1',
-            json_encode(['status' => 'OutOfStock'])
+            'room/'.$roomId,
+            json_encode([
+                'status' => Response::HTTP_CREATED,
+                'content' => $content,
+                'user' => $user->getId()
+                ])
         );
 
         $hub->publish($update);
-        $response = new Response('published!');
+
+        // TODO: Might not need a response after all. Might need some checking ?...
+        // Actually, could just return a json response using what's sent as an Update.
+        $response = new Response('published!', Response::HTTP_CREATED);
         return $response;
     }
 }
