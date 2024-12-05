@@ -12,6 +12,38 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
+
+    <header>
+        <nav class="flex justify-between items-center px-6 py-4 bg-gray-800 text-white">
+            <!-- Bouton Accueil -->
+            <div>
+                <a href="/" class="text-lg font-semibold hover:text-gray-300">
+                Accueil
+                </a>
+            </div>
+
+            <!-- Bouton Login/Logout -->
+            <div>
+                {% if app.user %}
+                <div class="flex items-center space-x-2">
+                    <p class="text-sm text-gray-300">
+                    Bonjour, <span class="font-semibold text-white">{{ app.user.getNickname }}</span>,
+                    </p>
+                    <a href="{{ path('app_logout') }}" 
+                    class="px-4 py-2 bg-red-500 text-sm font-medium rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                    Logout
+                    </a>
+                </div>
+                {% else %}
+                <a href="{{ path('app_login') }}" 
+                    class="px-4 py-2 bg-blue-500 text-sm font-medium rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Login
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
     <body>
         {% block body %}{% endblock %}
     </body>

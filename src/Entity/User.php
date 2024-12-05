@@ -199,4 +199,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function canAccessRoom(int $roomId) {
+        foreach ($this->rooms as $room) {
+            if ($room->getId() == $roomId) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -8,3 +8,11 @@ import './bootstrap.js';
 import './styles/app.css';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const container = e.target.closest('div');
+      container.remove();
+    });
+  });
+  
