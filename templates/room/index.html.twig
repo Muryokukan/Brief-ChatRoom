@@ -47,12 +47,15 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere velit e
         
         {# Chat Input Section #}
         <div class="flex items-center bg-slate-600 px-6 py-4">
-            <input
-                type="text"
-                placeholder="Type your message here..."
-                class="flex-1 bg-slate-500 text-white placeholder-slate-400 py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button class="ml-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md">Send</button>
+            {# <form action="{{ path('room_publish', {'roomId': roomId}) }}" method="POST"> #}
+                <input
+                    type="text"
+                    id="content"
+                    placeholder="Écrire ici..."
+                    class="flex-1 bg-slate-500 text-white placeholder-slate-400 py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button id="sendButton" class="ml-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md">Envoyer</button>
+            {# </form> #}
         </div>
     </div>
 
@@ -62,11 +65,53 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere velit e
 {% block javascripts %}
 
 <script>
+// Listener
 const eventSource = new EventSource("{{ mercure('room/1')|escape('js') }}");
 eventSource.onmessage = event => {
     // Will be called every time an update is published by the server
     console.log(JSON.parse(event.data));
 }
+
+function sendMessage () {
+    const text = document.getElementById('content').value;
+    const endpoint = "{{ path('room_publish', {'roomId': roomId}) }}";
+
+    fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 'content': text }),
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Failed to send message');
+        })
+        .catch(error => {
+            throw new Error('Error: ' + error.message);
+        });
+}
+
+// Button Click
+document.addEventListener('DOMContentLoaded', () => {
+    const textBox = document.getElementById('content');
+    const sendButton = document.getElementById('sendButton');
+
+    if (sendButton) {
+        sendButton.addEventListener('click', sendMessage);
+    }
+
+    if (textBox) {
+        textBox.addEventListener("keydown",function(e){
+            if(e.keyCode == 13){
+                sendMessage();
+            } 
+        });
+    }
+});
+
 </script>
 
 {% endblock %}

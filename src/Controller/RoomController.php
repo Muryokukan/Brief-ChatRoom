@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 use Symfony\Bundle\SecurityBundle\Security;
@@ -93,15 +94,28 @@ class RoomController extends AbstractController
     }
 
     // TODO: Once done testing, remove the GET method.
-    #[Route('/room/{roomId}/publish', name: 'room_publish', methods: ['GET', 'POST'])]
+    #[Route('/room/{roomId}/publish', name: 'room_publish', methods: ['POST'])]
     public function publish(
         int $roomId,
         HubInterface $hub,
         RoomRepository $roomRepo,
         Security $security,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        Request $request
         ): Response
     {
+        $requestArray = $request->toArray();
+
+        // if($request->get('content') === null) {
+        if(!isset($requestArray['content'])) {
+            return new Response(
+                Response::HTTP_BAD_REQUEST,
+                Response::HTTP_BAD_REQUEST,
+                []
+            );   
+        }
+        $content = $requestArray['content'];
+        
         $user = $security->getUser();
 
         if ($user === null) {
@@ -109,7 +123,11 @@ class RoomController extends AbstractController
         }
         
         if (!$user->canAccessRoom($roomId)) {
-            return new Response('', Response::HTTP_FORBIDDEN);
+            return new Response(
+                Response::HTTP_FORBIDDEN,
+                Response::HTTP_FORBIDDEN,
+                []
+            );
         }
 
         $message = new Message();
@@ -117,7 +135,6 @@ class RoomController extends AbstractController
         $room = $roomRepo->find($roomId);
 
         // TODO: Somehow get the content out of a post request.
-        $content = 'SET CONTENT';
         $message->setContent($content);
         $message->setRoom($room);
         $message->setUser($user);
@@ -125,20 +142,23 @@ class RoomController extends AbstractController
         $entityManager->persist($message);
         $entityManager->flush();
 
+        $json = json_encode([
+            'content' => $content,
+            'user' => $user->getId()
+        ]);
+
         $update = new Update(
             'room/'.$roomId,
-            json_encode([
-                'status' => Response::HTTP_CREATED,
-                'content' => $content,
-                'user' => $user->getId()
-                ])
+            $json
         );
 
         $hub->publish($update);
 
-        // TODO: Might not need a response after all. Might need some checking ?...
-        // Actually, could just return a json response using what's sent as an Update.
-        $response = new Response('published!', Response::HTTP_CREATED);
-        return $response;
+        return new JsonResponse(
+            $json,
+            Response::HTTP_OK,
+            [],
+            true
+        );
     }
 }
