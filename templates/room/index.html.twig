@@ -59,3 +59,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere velit e
 </div>
 
 {% endblock %}
+{% block javascripts %}
+
+<script>
+const eventSource = new EventSource("{{ mercure('room/1')|escape('js') }}");
+eventSource.onmessage = event => {
+    // Will be called every time an update is published by the server
+    console.log(JSON.parse(event.data));
+}
+</script>
+
+{% endblock %}

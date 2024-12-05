@@ -14,6 +14,9 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 use App\Repository\RoomRepository;
 
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
+
 class RoomController extends AbstractController
 {
     #[Route('/room/{roomId}', name: 'app_room')]
@@ -44,11 +47,15 @@ class RoomController extends AbstractController
         
         $messages = $room->getMessages();
 
+        $response = new Response();
+
         return $this->render('room/index.html.twig', [
             "roomId" => $roomId,
             "roomName" => $room->getName(),
-            "messages" => $messages
-        ]);
+            "messages" => $messages,
+        ],
+        response: $response
+        );
     }
 
     #[Route('/room/create', name: 'room_create', methods: ['GET', 'POST'])]
@@ -84,11 +91,24 @@ class RoomController extends AbstractController
         ]);
     }
 
-    #[Route('/room/{id}', name: 'room_show')]
+    #[Route('/room/{id}/details', name: 'room_show')]
     public function show(Room $room): Response
     {
         return $this->render('room/show.html.twig', [
             'room' => $room,
         ]);
+    }
+
+    #[Route('/room/{id}/publish', name: 'room_publish')]
+    public function publish(HubInterface $hub): Response
+    {
+        $update = new Update(
+            'room/1',
+            json_encode(['status' => 'OutOfStock'])
+        );
+
+        $hub->publish($update);
+        $response = new Response('published!');
+        return $response;
     }
 }
