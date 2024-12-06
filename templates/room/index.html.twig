@@ -19,18 +19,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere velit e
 
         {# Message #}
         {% for message in messages %}
-        <div class="flex-col w-full {{ app.user.id == message.getUser().getId() ? 'justify-items-end' }}">
-            <span class="font-mono">{{ message.getUser().getNickname() }}#{{ message.getUser().getId() }}</span>
-            <div class="p-4 rounded-lg w-fit max-w-7xl
-                {% if app.user.id == message.getUser().getId() %}
-                bg-slate-300 text-black rounded-tr-none justify-items-end
-                {% else %}
-                bg-blue-700 rounded-tl-none
-                {% endif %}
-                ">
-                {{ message.getContent() }}
-            </div>
-        </div>
+        {{ include('room/chatMessage.html.twig', {'userid': message.getUser().getId(), 'nick': message.getUser().getNickname(), 'messcontent': message.getContent()}) }}
         {% endfor %}
     </div>
 
