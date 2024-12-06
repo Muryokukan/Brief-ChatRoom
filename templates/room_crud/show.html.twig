@@ -1,30 +1,15 @@
-{% extends 'base.html.twig' %}
+    
+    <div class="relative p-6 bg-white rounded-lg shadow-md border border-gray-200">
+  
+  <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ room.name }}</h1>
+  <hr class="my-4 border-gray-300">
+  <p class="text-gray-600 mb-1 text-1xl">
+    Détails de la room : <br> {{ room.details }}
+  </p>
 
-{% block title %}Room{% endblock %}
-
-{% block body %}
-    <h1>Room</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ room.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ room.name }}</td>
-            </tr>
-            <tr>
-                <th>Details</th>
-                <td>{{ room.details }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_room_c_r_u_d_index') }}">back to list</a>
 
     <a href="{{ path('app_room_c_r_u_d_edit', {'id': room.id}) }}">edit</a>
 
     {{ include('room_crud/_delete_form.html.twig') }}
-{% endblock %}
+    
+</div>
