@@ -8,15 +8,6 @@
 
     {# Chat Section #}
     <div id="chatLog" class="flex-1 overflow-y-auto p-8">
-        {# Message exemple
-        <div class="flex-col">
-            <span class="font-mono">Username#1</span>
-            <div class="bg-blue-700 p-4 rounded-md w-fit max-w-7xl rounded-tl-none">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere velit et sapien rhoncus cursus. Sed scelerisque neque vel nulla pretium, eu tincidunt metus eleifend. Nulla facilisi. Duis a libero ultricies, rutrum mi a, convallis est. Nam finibus tortor et ante hendrerit rhoncus. Cras at faucibus dolor, at consequat velit. Maecenas vitae velit nibh.
-            </div>
-        </div>
-        #}
-
         {# Message #}
         {% for message in messages %}
         {{ include('room/chatMessage.html.twig', {'userid': message.getUser().getId(), 'nick': message.getUser().getNickname(), 'messcontent': message.getContent()}) }}
@@ -28,7 +19,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere velit e
         
         {# Buttons Row #}
         <div class="flex justify-evenly p-6 bg-slate-600">
-            <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Button 1</button>
+            <button id="btnRecap" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Récapituler</button>
             <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Button 2</button>
             <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Button 3</button>
             <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Button 4</button>
@@ -54,6 +45,23 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam posuere velit e
 {% block javascripts %}
 
 <script>
+async function groqRecap() {
+    try {
+        // Fetch the rendered Twig HTML
+        const response = await fetch(`{{path('groq_recap')}}?chatroom={{roomId}}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        responsejson = await response.json();
+
+        renderMessage(1, responsejson.answer);
+    } catch (error) {
+        console.error('Error rendering message:', error);
+    }
+}
+
 // Listener
 const eventSource = new EventSource("{{ mercure('room/1')|escape('js') }}");
 eventSource.onmessage = event => {
@@ -115,6 +123,7 @@ function sendMessage () {
 document.addEventListener('DOMContentLoaded', () => {
     const textBox = document.getElementById('content');
     const sendButton = document.getElementById('sendButton');
+    document.getElementById("btnRecap").addEventListener('click', groqRecap);
 
     if (sendButton) {
         sendButton.addEventListener('click', sendMessage);

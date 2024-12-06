@@ -154,7 +154,6 @@ class RoomController extends AbstractController
 
         $room = $roomRepo->find($roomId);
 
-        // TODO: Somehow get the content out of a post request.
         $message->setContent($content);
         $message->setRoom($room);
         $message->setUser($user);
