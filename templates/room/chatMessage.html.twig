@@ -1,0 +1,12 @@
+<div class="flex-col w-full {{ app.user.id == userid ? 'justify-items-end' }}">
+    <span class="font-mono">{{ nick }}#{{ userid }}</span>
+    <div class="p-4 rounded-lg w-fit max-w-7xl
+        {% if app.user.id == userid %}
+        bg-slate-300 text-black rounded-tr-none justify-items-end
+        {% else %}
+        bg-blue-700 rounded-tl-none
+        {% endif %}
+        ">
+        {{ messcontent }}
+    </div>
+</div>
