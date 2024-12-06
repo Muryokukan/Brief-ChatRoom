@@ -7,7 +7,7 @@
 <div class="flex flex-col w-screen h-screen bg-slate-800 text-white">
 
     {# Chat Section #}
-    <div class="flex-1 overflow-y-auto p-8">
+    <div id="chatLog" class="flex-1 overflow-y-auto p-8">
         {# Message exemple
         <div class="flex-col">
             <span class="font-mono">Username#1</span>
@@ -70,28 +70,56 @@ const eventSource = new EventSource("{{ mercure('room/1')|escape('js') }}");
 eventSource.onmessage = event => {
     // Will be called every time an update is published by the server
     console.log(JSON.parse(event.data));
+    message = JSON.parse(event.data);
+
+    renderMessage(message.user, message.content);
+}
+
+async function renderMessage(userid, content) {
+    try {
+        // Fetch the rendered Twig HTML
+        const response = await fetch(`{{path('render_message')}}?userid=${encodeURIComponent(userid)}&content=${encodeURIComponent(content)}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const data = await response.text();
+
+        // Append the rendered HTML to the chat container
+        const chatContainer = document.getElementById('chatLog');
+        chatContainer.innerHTML += data;
+        
+        chatContainer.scrollTop = chatLog.scrollHeight;
+    } catch (error) {
+        console.error('Error rendering message:', error);
+    }
 }
 
 function sendMessage () {
     const text = document.getElementById('content').value;
     const endpoint = "{{ path('room_publish', {'roomId': roomId}) }}";
 
-    fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 'content': text }),
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error('Failed to send message');
+    if (text != '') {
+        document.getElementById('content').value = "";
+
+        fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 'content': text }),
         })
-        .catch(error => {
-            throw new Error('Error: ' + error.message);
-        });
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Failed to send message');
+            })
+            .catch(error => {
+                throw new Error('Error: ' + error.message);
+            });
+    }
 }
 
 // Button Click

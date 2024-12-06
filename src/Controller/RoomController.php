@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\SecurityBundle\Security;
 
 use App\Repository\RoomRepository;
+use App\Repository\UserRepository;
 
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
@@ -93,7 +94,26 @@ class RoomController extends AbstractController
         ]);
     }
 
-    // TODO: Once done testing, remove the GET method.
+    #[Route('/rendermessage', name: 'render_message', methods: ['GET'])]
+    public function renderMessage(Request $request, UserRepository $userRepo) : Response
+    {
+        (int) $userid = $request->query->get('userid');
+        $messcontent = $request->query->get('content');
+
+        $nick = $userRepo->find($userid)->getNickname();
+
+        $html = $this->render(
+            'room/chatMessage.html.twig',
+            [
+                "nick" => $nick,
+                'userid' => $userid,
+                'messcontent' => $messcontent
+            ]
+        );
+        
+        return $html;
+    }
+
     #[Route('/room/{roomId}/publish', name: 'room_publish', methods: ['POST'])]
     public function publish(
         int $roomId,
