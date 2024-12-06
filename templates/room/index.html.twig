@@ -20,7 +20,7 @@
         {# Buttons Row #}
         <div class="flex justify-evenly p-6 bg-slate-600">
             <button id="btnRecap" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Récapituler</button>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Button 2</button>
+            <button id="btnIdea" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Générer une idée</button>
             <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Button 3</button>
             <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Button 4</button>
         </div>
@@ -49,6 +49,23 @@ async function groqRecap() {
     try {
         // Fetch the rendered Twig HTML
         const response = await fetch(`{{path('groq_recap')}}?chatroom={{roomId}}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        responsejson = await response.json();
+
+        renderMessage(1, responsejson.answer);
+    } catch (error) {
+        console.error('Error rendering message:', error);
+    }
+}
+
+async function groqIdea() {
+    try {
+        // Fetch the rendered Twig HTML
+        const response = await fetch(`{{path('groq_idea')}}?chatroom={{roomId}}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -124,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const textBox = document.getElementById('content');
     const sendButton = document.getElementById('sendButton');
     document.getElementById("btnRecap").addEventListener('click', groqRecap);
+    document.getElementById("btnIdea").addEventListener('click', groqIdea);
 
     if (sendButton) {
         sendButton.addEventListener('click', sendMessage);

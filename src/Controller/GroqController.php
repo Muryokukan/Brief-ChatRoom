@@ -59,6 +59,41 @@ class GroqController extends AbstractController
             Response::HTTP_OK, [], true);
     }
 
+    #[Route('/idea', name: 'groq_idea', methods: ["GET"])]
+    public function idea(
+        MessageRepository $messageRepo,
+        UserRepository $userRepo,
+        RoomRepository $roomRepo,
+        EntityManagerInterface $entityManager,
+        Request $request
+        ): JsonResponse
+    {
+        $chatroomId = $request->query->get("chatroom");
+        $chatroom = $roomRepo->find($chatroomId);
+
+        $user = $userRepo->find(1);
+
+        $groq = $this->makeGroq();
+        $context = $this->getContext($messageRepo, "Donnes au brainstorm une idée fraîche pour alimenter la conversation.", $chatroomId);
+
+        try {
+            $answer = $this->generateGroq($groq, $context);
+        } catch (GroqException $err) {
+            return $this->handleGroqError($err);
+        }
+
+        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager);
+
+        return new JsonResponse(
+            json_encode(
+                [
+                    "status" => Response::HTTP_OK,
+                    "answer" => $answer
+                ]
+            ),
+            Response::HTTP_OK, [], true);
+    }
+
 
     # Utility functions
     private function saveGroqMessage(
