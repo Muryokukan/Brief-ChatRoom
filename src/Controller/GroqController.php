@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
+
 use Symfony\Bundle\SecurityBundle\Security;
 
 use LucianoTonet\GroqPHP\Groq;
@@ -32,7 +35,8 @@ class GroqController extends AbstractController
         UserRepository $userRepo,
         RoomRepository $roomRepo,
         EntityManagerInterface $entityManager,
-        Request $request
+        Request $request,
+        HubInterface $hub
         ): JsonResponse
     {
         $chatroomId = $request->query->get("chatroom");
@@ -49,7 +53,7 @@ class GroqController extends AbstractController
             return $this->handleGroqError($err);
         }
 
-        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager);
+        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager, $hub);
 
         return new JsonResponse(
             json_encode(
@@ -67,7 +71,8 @@ class GroqController extends AbstractController
         UserRepository $userRepo,
         RoomRepository $roomRepo,
         EntityManagerInterface $entityManager,
-        Request $request
+        Request $request,
+        HubInterface $hub
         ): JsonResponse
     {
         $chatroomId = $request->query->get("chatroom");
@@ -84,7 +89,7 @@ class GroqController extends AbstractController
             return $this->handleGroqError($err);
         }
 
-        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager);
+        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager, $hub);
 
         return new JsonResponse(
             json_encode(
@@ -103,7 +108,8 @@ class GroqController extends AbstractController
         RoomRepository $roomRepo,
         EntityManagerInterface $entityManager,
         Request $request,
-        Security $security
+        Security $security,
+        HubInterface $hub
         ): JsonResponse
     {
         $chatroomId = $request->query->get("chatroom");
@@ -123,7 +129,7 @@ class GroqController extends AbstractController
             return $this->handleGroqError($err);
         }
 
-        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager);
+        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager, $hub);
 
         return new JsonResponse(
             json_encode(
@@ -189,7 +195,7 @@ class GroqController extends AbstractController
             return $this->handleGroqError($err);
         }
 
-        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager);
+        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager, $hub);
 
         return new JsonResponse(
             json_encode(
@@ -207,7 +213,8 @@ class GroqController extends AbstractController
         string $message,
         Room $chatroom,
         User $groqAccount,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        HubInterface $hub
         )
     {
         $savedMessage = new Message();
@@ -218,6 +225,19 @@ class GroqController extends AbstractController
 
         $entityManager->persist($savedMessage);
         $entityManager->flush();
+
+        // To publish the update to the mercure hub
+        $json = json_encode([
+            'content' => $message,
+            'user' => $groqAccount->getId()
+        ]);
+
+        $update = new Update(
+            'room/'.$chatroom->getId(),
+            $json
+        );
+
+        $hub->publish($update);
     }
 
     private function handleGroqError(GroqException $err) {

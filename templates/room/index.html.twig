@@ -54,9 +54,9 @@ async function groqRecap() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        responsejson = await response.json();
+        // responsejson = await response.json();
 
-        renderMessage(1, await responsejson.answer);
+        // renderMessage(1, await responsejson.answer);
     } catch (error) {
         console.error('Error rendering message:', error);
     }
@@ -71,9 +71,9 @@ async function groqIdea() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        responsejson = await response.json();
+        // responsejson = await response.json();
 
-        renderMessage(1, await responsejson.answer);
+        // renderMessage(1, await responsejson.answer);
     } catch (error) {
         console.error('Error rendering message:', error);
     }
@@ -88,9 +88,9 @@ async function groqCritic() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        responsejson = await response.json();
+        // responsejson = await response.json();
 
-        renderMessage(1, await responsejson.answer);
+        // renderMessage(1, await responsejson.answer);
     } catch (error) {
         console.error('Error rendering message:', error);
     }
@@ -114,9 +114,9 @@ async function groqCustom() {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
         
-            responsejson = await response.json();
+            // responsejson = await response.json();
 
-            renderMessage(1, await responsejson.answer);
+            // renderMessage(1, await responsejson.answer);
         }
     } catch (error) {
         console.error('Error rendering message:', error);
@@ -127,7 +127,7 @@ async function groqCustom() {
 const eventSource = new EventSource("{{ mercure('room/' ~ roomId)|escape('js') }}");
 eventSource.onmessage = event => {
     // Will be called every time an update is published by the server
-    console.log(JSON.parse(event.data));
+    // console.log(JSON.parse(event.data));
     message = JSON.parse(event.data);
 
     renderMessage(message.user, message.content);
