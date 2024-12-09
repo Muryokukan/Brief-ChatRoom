@@ -3,6 +3,8 @@
     <div class="p-4 rounded-lg w-fit max-w-7xl
         {% if app.user.id == userid %}
         bg-slate-300 text-black rounded-tr-none justify-items-end
+        {% elseif userid == 1 %}
+        bg-sky-600 rounded-tl-none
         {% else %}
         bg-blue-700 rounded-tl-none
         {% endif %}
