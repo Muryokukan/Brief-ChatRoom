@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use Symfony\Bundle\SecurityBundle\Security;
+
 use LucianoTonet\GroqPHP\Groq;
 use LucianoTonet\GroqPHP\GroqException;
 
@@ -74,7 +76,46 @@ class GroqController extends AbstractController
         $user = $userRepo->find(1);
 
         $groq = $this->makeGroq();
-        $context = $this->getContext($messageRepo, $roomRepo, "Donnes une idée ou piste de réflexion pour alimenter le brainstorming. Reste concis.", $chatroomId, messageHistory: 10);
+        $context = $this->getContext($messageRepo, $roomRepo, "Donnes une idée ou piste de réflexion pour alimenter le brainstorming.", $chatroomId, messageHistory: 10);
+
+        try {
+            $answer = $this->generateGroq($groq, $context);
+        } catch (GroqException $err) {
+            return $this->handleGroqError($err);
+        }
+
+        $this->saveGroqMessage($answer, $chatroom, $user, $entityManager);
+
+        return new JsonResponse(
+            json_encode(
+                [
+                    "status" => Response::HTTP_OK,
+                    "answer" => $answer
+                ]
+            ),
+            Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/critic', name: 'groq_critic', methods: ["GET"])]
+    public function critic(
+        MessageRepository $messageRepo,
+        UserRepository $userRepo,
+        RoomRepository $roomRepo,
+        EntityManagerInterface $entityManager,
+        Request $request,
+        Security $security
+        ): JsonResponse
+    {
+        $chatroomId = $request->query->get("chatroom");
+        $chatroom = $roomRepo->find($chatroomId);
+
+        $user = $userRepo->find(1);
+
+        $groq = $this->makeGroq();
+
+        $asker = $security->getUser();
+        $askerDisplay = $asker->getNickname()."#".$asker->getId();
+        $context = $this->getContext($messageRepo, $roomRepo, $askerDisplay." te demande une critique constructive sur les dernières idées données.", $chatroomId, messageHistory: 6);
 
         try {
             $answer = $this->generateGroq($groq, $context);
@@ -130,12 +171,12 @@ class GroqController extends AbstractController
         );
     }
 
-    private function makeGroq() : Groq {
+    private function makeGroq(?int $maxTokens = 128) : Groq {
         $groq = new Groq(
             $_ENV['GROQ_API_KEY'],
             [
                 'temperature' => 0.5,
-                'max_tokens' => 128,
+                'max_tokens' => $maxTokens,
             ]
         );
 
@@ -184,7 +225,12 @@ class GroqController extends AbstractController
         array_push($messagesGroq,
         [
             'role' => 'system',
-            'content' => "Réponds en français. Tu t'appelle CatBot. Tu es une IA qui aide ses utilisateurs à brainstorm dans des salons de chat. La salle actuelle s'appelle \"".$roomname." \", avec comme description \"".$roomdetails."\" ".$prompt,
+            'content' => "Réponds en français. Tu t'appelle CatBot.
+                Tu es une IA qui aide ses utilisateurs à brainstorm dans des salons de chat. 
+                Tu dois toujours rester concis, et ne pas te présenter sauf si demander. 
+                Les utilisateurs sont identifiés par un surnom non-unique, suivi de leur identifiant. (Username#id) 
+                Se baser sur l'identifiant pour reconnaître les ultilisateurs, mais répondre avec le même format. 
+                La salle actuelle s'appelle \"".$roomname." \", avec comme description \"".$roomdetails."\". ".$prompt,
         ]    
         );
 

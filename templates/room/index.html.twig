@@ -4,7 +4,7 @@
 
 {% block body %}
 {# Wrapper #}
-<div class="flex flex-col w-screen h-screen bg-slate-800 text-white">
+<div class="flex flex-col max-w-full h-screen bg-slate-800 text-white">
 
     {# Chat Section #}
     <div id="chatLog" class="flex-1 overflow-y-auto p-8">
@@ -21,8 +21,8 @@
         <div class="flex justify-evenly p-6 bg-slate-600">
             <button id="btnRecap" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Récapituler</button>
             <button id="btnIdea" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Générer une idée</button>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Button 3</button>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Button 4</button>
+            <button id="btnCritic" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Donner une critique</button>
+            <button id="btnCustom" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Demande personnalisée</button>
         </div>
         
         {# Chat Input Section #}
@@ -66,6 +66,23 @@ async function groqIdea() {
     try {
         // Fetch the rendered Twig HTML
         const response = await fetch(`{{path('groq_idea')}}?chatroom={{roomId}}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        responsejson = await response.json();
+
+        renderMessage(1, responsejson.answer);
+    } catch (error) {
+        console.error('Error rendering message:', error);
+    }
+}
+
+async function groqCritic() {
+    try {
+        // Fetch the rendered Twig HTML
+        const response = await fetch(`{{path('groq_critic')}}?chatroom={{roomId}}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -142,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendButton = document.getElementById('sendButton');
     document.getElementById("btnRecap").addEventListener('click', groqRecap);
     document.getElementById("btnIdea").addEventListener('click', groqIdea);
+    document.getElementById("btnCritic").addEventListener('click', groqCritic);
 
     if (sendButton) {
         sendButton.addEventListener('click', sendMessage);
