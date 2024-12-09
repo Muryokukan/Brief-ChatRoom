@@ -39,7 +39,7 @@ class GroqController extends AbstractController
         $user = $userRepo->find(1);
 
         $groq = $this->makeGroq();
-        $context = $this->getContext($messageRepo, "Donnes un résumé concis de leur conversation. Évites d'utiliser les #ids.", $chatroomId);
+        $context = $this->getContext($roomRepo, $messageRepo, "Donnes un résumé concis de leur conversation. Évites d'utiliser les #ids.", $chatroomId);
 
         try {
             $answer = $this->generateGroq($groq, $context);
@@ -74,7 +74,7 @@ class GroqController extends AbstractController
         $user = $userRepo->find(1);
 
         $groq = $this->makeGroq();
-        $context = $this->getContext($messageRepo, "Donnes au brainstorm une idée fraîche pour alimenter la conversation.", $chatroomId);
+        $context = $this->getContext($roomRepo, $messageRepo, "Donnes une idée ou piste de réflexion pour alimenter le brainstorming. Reste concis.", $chatroomId);
 
         try {
             $answer = $this->generateGroq($groq, $context);
@@ -144,6 +144,7 @@ class GroqController extends AbstractController
 
     private function getContext(
         MessageRepository $messageRepo,
+        RoomRepository $roomRepo,
         String $prompt,
         int $chatroomId,
         ?int $messageHistory = 8
@@ -176,10 +177,14 @@ class GroqController extends AbstractController
             );
         }
 
+        $room = $roomRepo->find($chatroomId);
+        $roomname = $room->getName();
+        $roomdetails = $room->getDetails();
+
         array_push($messagesGroq,
         [
             'role' => 'system',
-            'content' => "Répondre en français. Tu t'appelle CatBot. ".$prompt,
+            'content' => "Réponds en français. Tu t'appelle CatBot. Tu es une IA qui aide ses utilisateurs à brainstorm dans des salons de chat. La salle actuelle s'appelle \"".$roomname." \", avec comme description \"".$roomdetails."\" ".$prompt,
         ]    
         );
 
