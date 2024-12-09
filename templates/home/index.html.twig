@@ -10,8 +10,8 @@
         <h1 class="text-3xl font-bold text-center mb-6 m-4 pb-8">Bienvenue sur notre page d'accueil</h1>
 
         {% if app.user %}
-            <div id="boxContainer" class="flex flex-row space-x-6 mb-4">
-                {% for room in rooms  %}
+            <div id="boxContainer" class="grid gap-6 mb-4 grid-wrap lg:grid-cols-2 xl:grid-cols-3">
+                {% for room in rooms %}
 
                 {{ include('room_crud/show.html.twig') }}
 
