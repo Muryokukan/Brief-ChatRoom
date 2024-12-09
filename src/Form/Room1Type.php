@@ -16,12 +16,8 @@ class Room1Type extends AbstractType
         $builder
             ->add('name')
             ->add('details')
-            ->add('users', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
-        ;
+            // ->add('users', EntityType::class, ['class' => User::class,'choice_label' => 'id','multiple' => true,])
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

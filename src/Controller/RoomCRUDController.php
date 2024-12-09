@@ -2,14 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\Room;
-use App\Form\Room1Type;
-use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
+
+use Symfony\Bundle\SecurityBundle\Security;
+
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+
+use App\Entity\Room;
+use App\Repository\RoomRepository;
+
+use App\Form\Room1Type;
 
 #[Route('/room')]
 final class RoomCRUDController extends AbstractController
@@ -22,13 +28,18 @@ final class RoomCRUDController extends AbstractController
     }
 
     #[Route('/new', name: 'app_room_c_r_u_d_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        Security $security
+        ): Response
     {
         $room = new Room();
         $form = $this->createForm(Room1Type::class, $room);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $room->addUser($security->getUser());
             $entityManager->persist($room);
             $entityManager->flush();
 
