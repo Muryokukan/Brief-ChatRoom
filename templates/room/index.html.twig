@@ -80,7 +80,7 @@ async function groqIdea() {
 }
 
 // Listener
-const eventSource = new EventSource("{{ mercure('room/1')|escape('js') }}");
+const eventSource = new EventSource("{{ mercure('room/' ~ roomId)|escape('js') }}");
 eventSource.onmessage = event => {
     // Will be called every time an update is published by the server
     console.log(JSON.parse(event.data));
