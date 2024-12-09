@@ -39,7 +39,7 @@ class GroqController extends AbstractController
         $user = $userRepo->find(1);
 
         $groq = $this->makeGroq();
-        $context = $this->getContext($roomRepo, $messageRepo, "Donnes un résumé concis de leur conversation. Évites d'utiliser les #ids.", $chatroomId);
+        $context = $this->getContext($messageRepo, $roomRepo, "Donnes un résumé concis de leur conversation. Évites d'utiliser les #ids.", $chatroomId);
 
         try {
             $answer = $this->generateGroq($groq, $context);
@@ -74,7 +74,7 @@ class GroqController extends AbstractController
         $user = $userRepo->find(1);
 
         $groq = $this->makeGroq();
-        $context = $this->getContext($roomRepo, $messageRepo, "Donnes une idée ou piste de réflexion pour alimenter le brainstorming. Reste concis.", $chatroomId);
+        $context = $this->getContext($messageRepo, $roomRepo, "Donnes une idée ou piste de réflexion pour alimenter le brainstorming. Reste concis.", $chatroomId, messageHistory: 10);
 
         try {
             $answer = $this->generateGroq($groq, $context);
