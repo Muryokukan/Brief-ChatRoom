@@ -44,7 +44,7 @@ class GroqController extends AbstractController
 
         $user = $userRepo->find(1);
 
-        $groq = $this->makeGroq();
+        $groq = $this->makeGroq(temperature: 0.5, maxTokens: 256);
         $context = $this->getContext($messageRepo, $roomRepo, "Donnes un résumé concis de leur conversation. Évites d'utiliser les #ids.", $chatroomId, messageHistory: 12);
 
         try {
@@ -80,8 +80,8 @@ class GroqController extends AbstractController
 
         $user = $userRepo->find(1);
 
-        $groq = $this->makeGroq(64);
-        $context = $this->getContext($messageRepo, $roomRepo, "Donnes une idée ou piste de réflexion pour alimenter le brainstorming.", $chatroomId, messageHistory: 2);
+        $groq = $this->makeGroq(temperature: 0.6, maxTokens: 128);
+        $context = $this->getContext($messageRepo, $roomRepo, "Donnes une idée ou piste de réflexion pour alimenter le brainstorming.", $chatroomId, messageHistory: 8);
 
         try {
             $answer = $this->generateGroq($groq, $context);
@@ -117,7 +117,7 @@ class GroqController extends AbstractController
 
         $user = $userRepo->find(1);
 
-        $groq = $this->makeGroq();
+        $groq = $this->makeGroq(temperature: 0.5, maxTokens: 256);
 
         $asker = $security->getUser();
         $askerDisplay = $asker->getNickname()."#".$asker->getId();
@@ -178,7 +178,7 @@ class GroqController extends AbstractController
 
         $user = $userRepo->find(1);
 
-        $groq = $this->makeGroq();
+        $groq = $this->makeGroq(temperature: 0.5, maxTokens: 256);
 
         $asker = $security->getUser();
         $askerDisplay = $asker->getNickname()."#".$asker->getId();
@@ -257,11 +257,11 @@ class GroqController extends AbstractController
         );
     }
 
-    private function makeGroq(?int $maxTokens = 128) : Groq {
+    private function makeGroq(?float $temperature = 0.5, ?int $maxTokens = 128) : Groq {
         $groq = new Groq(
             $_ENV['GROQ_API_KEY'],
             [
-                'temperature' => 0.5,
+                'temperature' => $temperature,
                 'max_tokens' => $maxTokens,
             ]
         );
@@ -320,7 +320,7 @@ class GroqController extends AbstractController
 
     private function generateGroq(Groq $groq, array $context) {
         $response = $groq->chat()->completions()->create([
-            'model' => 'llama3-70b-8192',
+            'model' => 'llama-3.3-70b-versatile',
             // 'model' => 'mixtral-8x7b-32768',
             'messages' => $context
         ]);
