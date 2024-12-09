@@ -148,7 +148,8 @@ class GroqController extends AbstractController
         RoomRepository $roomRepo,
         EntityManagerInterface $entityManager,
         Request $request,
-        Security $security
+        Security $security,
+        HubInterface $hub
         ): Response
     {
         $chatroomId = $request->query->get("chatroom");
