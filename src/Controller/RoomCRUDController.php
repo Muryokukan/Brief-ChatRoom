@@ -18,9 +18,7 @@ final class RoomCRUDController extends AbstractController
     name: 'app_room_c_r_u_d_index', methods: ['GET'])]
     public function index(RoomRepository $roomRepository): Response
     {
-        return $this->render('room_crud/index.html.twig', [
-            'rooms' => $roomRepository->findAll(),
-        ]);
+        return $this->redirectToRoute('app_home');
     }
 
     #[Route('/new', name: 'app_room_c_r_u_d_new', methods: ['GET', 'POST'])]
