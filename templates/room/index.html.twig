@@ -56,7 +56,7 @@ async function groqRecap() {
 
         responsejson = await response.json();
 
-        renderMessage(1, responsejson.answer);
+        renderMessage(1, await responsejson.answer);
     } catch (error) {
         console.error('Error rendering message:', error);
     }
@@ -73,7 +73,7 @@ async function groqIdea() {
 
         responsejson = await response.json();
 
-        renderMessage(1, responsejson.answer);
+        renderMessage(1, await responsejson.answer);
     } catch (error) {
         console.error('Error rendering message:', error);
     }
@@ -90,7 +90,34 @@ async function groqCritic() {
 
         responsejson = await response.json();
 
-        renderMessage(1, responsejson.answer);
+        renderMessage(1, await responsejson.answer);
+    } catch (error) {
+        console.error('Error rendering message:', error);
+    }
+}
+
+async function groqCustom() {
+    const text = document.getElementById('content').value;
+    try {
+        if (text != '') {
+            document.getElementById('content').value = "";
+
+            const response = await fetch(`{{path('groq_custom')}}?chatroom={{roomId}}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'content': text }),
+            })
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+        
+            responsejson = await response.json();
+
+            renderMessage(1, await responsejson.answer);
+        }
     } catch (error) {
         console.error('Error rendering message:', error);
     }
@@ -160,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("btnRecap").addEventListener('click', groqRecap);
     document.getElementById("btnIdea").addEventListener('click', groqIdea);
     document.getElementById("btnCritic").addEventListener('click', groqCritic);
+    document.getElementById("btnCustom").addEventListener('click', groqCustom);
 
     if (sendButton) {
         sendButton.addEventListener('click', sendMessage);
