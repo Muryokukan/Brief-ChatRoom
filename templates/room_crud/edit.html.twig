@@ -22,6 +22,19 @@
     <p id="statusMessage"></p>
 </div>
 
+<form action="{{ path('crud_room_removeuser', {'roomId': roomId}) }}" method="post">
+    <select id="userId" name="userId">
+        <option value="">--Sélectionner un utilisateur à retirer--</option>
+        {% for user in usersInRoom %}
+        <option value="{{ user.id }}">{{ user.nickname ~ "#" ~ user.id }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Retirer la personne"/>
+</form>
+{# crud_room_removeuser #}
+
+{% block javacripts %}
 <script>
         document.getElementById('copyButton').addEventListener('click', async () => {
             const inviteLink = document.getElementById('inviteLink').textContent; // Récupère le lien
@@ -38,7 +51,7 @@
             }
         });
 </script>
-
+{% endblock %}
 
 
 {% endblock %}

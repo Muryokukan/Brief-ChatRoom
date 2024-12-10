@@ -47,10 +47,9 @@ final class RoomCRUDController extends AbstractController
         return $this->redirectToRoute('app_home');
     }
 
-    #[Route('/room/{roomId}/removeuser/{userId}', name: 'crud_room_removeuser', methods: ['GET'])]
+    #[Route('/room/{roomId}/removeuser', name: 'crud_room_removeuser', methods: ['POST'])]
     public function removeUser(
         int $roomId,
-        int $userId,
         RoomRepository $roomRepo,
         UserRepository $userRepo,
         Request $request,
@@ -58,6 +57,8 @@ final class RoomCRUDController extends AbstractController
         Security $security
         ): Response
     {   
+        $userId = $request->get("userId");
+
         $user = $userRepo->find($userId);
         $room = $roomRepo->find($roomId);
 
@@ -135,6 +136,7 @@ final class RoomCRUDController extends AbstractController
         $usersInRoom = $room->getUsers();
 
         return $this->render('room_crud/edit.html.twig', [
+            'roomId' => $room->getId(),
             'room' => $room,
             'form' => $form,
             "usersInRoom" => $usersInRoom,
