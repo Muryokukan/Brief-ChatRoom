@@ -126,6 +126,6 @@ final class RoomCRUDController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_room_c_r_u_d_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
     }
 }
