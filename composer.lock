@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4a9c93dcf01a8fcfe57c8231cd9201d5",
+    "content-hash": "1ba5db3f95c174df0d0ed8aff6ade7d4",
     "packages": [
         {
             "name": "composer/semver",
@@ -2861,6 +2861,71 @@
                 "source": "https://github.com/ralouphie/getallheaders/tree/develop"
             },
             "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
+            "name": "spatie/url-signer",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/url-signer.git",
+                "reference": "991ee9e2c266181696b1aa1120583cc38dfb42a5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/url-signer/zipball/991ee9e2c266181696b1aa1120583cc38dfb42a5",
+                "reference": "991ee9e2c266181696b1aa1120583cc38dfb42a5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "pestphp/pest": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\UrlSigner\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://github.com/freekmurze",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sebastian De Deyne",
+                    "email": "sebastian@spatie.be",
+                    "homepage": "https://github.com/sebastiandedeyne",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Generate a url with an expiration date and signature to prevent unauthorized access",
+            "homepage": "https://github.com/spatie/url-signer",
+            "keywords": [
+                "encryption",
+                "security",
+                "sign",
+                "spatie",
+                "url"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/url-signer/issues",
+                "source": "https://github.com/spatie/url-signer/tree/2.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-12-06T11:03:28+00:00"
         },
         {
             "name": "stella-maris/clock",
@@ -8528,6 +8593,79 @@
                 "source": "https://github.com/SymfonyCasts/verify-email-bundle/tree/v1.17.2"
             },
             "time": "2024-10-22T11:14:17+00:00"
+        },
+        {
+            "name": "tilleuls/url-signer-bundle",
+            "version": "v2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/coopTilleuls/UrlSignerBundle.git",
+                "reference": "4f32640494690123c8435d7d46e2d0fcded75907"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/coopTilleuls/UrlSignerBundle/zipball/4f32640494690123c8435d7d46e2d0fcded75907",
+                "reference": "4f32640494690123c8435d7d46e2d0fcded75907",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "spatie/url-signer": "^2.0",
+                "symfony/config": "^4.4 || ^5.1 || ^6.0 || ^7.0",
+                "symfony/dependency-injection": "^4.4 || ^5.1 || ^6.0 || ^7.0",
+                "symfony/event-dispatcher": "^4.4 || ^5.1 || ^6.0 || ^7.0",
+                "symfony/http-kernel": "^4.4 || ^5.1 || ^6.0 || ^7.0",
+                "symfony/routing": "^4.4 || ^5.1 || ^6.0 || ^7.0"
+            },
+            "require-dev": {
+                "behat/behat": "^3.8",
+                "friends-of-behat/symfony-extension": "^2.2",
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "infection/infection": "^0.27",
+                "jangregor/phpstan-prophecy": "^1.0",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpstan/phpstan": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "psalm/plugin-phpunit": "^0.18",
+                "psalm/plugin-symfony": "^5.0",
+                "symfony/browser-kit": "^4.4 || ^5.0 || ^6.0 || ^7.0",
+                "symfony/framework-bundle": "^4.4 || ^5.0 || ^6.0 || ^7.0",
+                "vimeo/psalm": "^5.8"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "CoopTilleuls\\UrlSignerBundle\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/features/",
+                    "/tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alan Poulain",
+                    "email": "alan@les-tilleuls.coop"
+                }
+            ],
+            "description": "Create and validate signed URLs with a limited lifetime in Symfony",
+            "keywords": [
+                "encryption",
+                "security",
+                "sign",
+                "symfony",
+                "url"
+            ],
+            "support": {
+                "issues": "https://github.com/coopTilleuls/UrlSignerBundle/issues",
+                "source": "https://github.com/coopTilleuls/UrlSignerBundle/tree/v2.2.1"
+            },
+            "time": "2024-01-11T15:33:26+00:00"
         },
         {
             "name": "twig/extra-bundle",

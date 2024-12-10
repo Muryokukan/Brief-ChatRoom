@@ -1,13 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Room{% endblock %}
+{% block title %}Modifier la Room{% endblock %}
 
 {% block body %}
-    <h1>Edit Room</h1>
 
-    {{ include('room_crud/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('room_crud/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-    <a href="{{ path('app_room_c_r_u_d_index') }}">back to list</a>
+    <a href="{{ path('app_home') }}">Retour</a>
 
     {{ include('room_crud/_delete_form.html.twig') }}
+
+
+<div class="flex flex-col items-center justify-center space-y-4 h-200">
+    <h1>Invitez vos collègues</h1>
+    <p>
+        Voici votre lien d'invitation : <br>
+        <span id="inviteLink">{{ invitelink }}</span>
+    </p>
+    <button id="copyButton">Copier le lien</button>
+    <p id="statusMessage"></p>
+</div>
+<br>
+<form action="{{ path('crud_room_removeuser', {'roomId': roomId}) }}" method="post">
+    <select id="userId" name="userId" required>
+        <option value="">--Sélectionner un utilisateur à retirer--</option>
+        {% for user in usersInRoom %}
+        <option value="{{ user.id }}">{{ user.nickname ~ "#" ~ user.id }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Retirer la personne" class="cursor-pointer"/>
+</form>
+{# crud_room_removeuser #}
+
+{% block javacripts %}
+<script>
+        document.getElementById('copyButton').addEventListener('click', async () => {
+            const inviteLink = document.getElementById('inviteLink').textContent; // Récupère le lien
+            const statusMessage = document.getElementById('statusMessage');
+
+            try {
+                await navigator.clipboard.writeText(inviteLink); // Copie le lien dans le presse-papiers
+                alert("Lien copié dans le presse-papiers !");
+                statusMessage.style.color = "green";
+            } catch (err) {
+                console.error("Erreur lors de la copie :", err);
+                statusMessage.textContent = "Erreur : Impossible de copier le lien.";
+                statusMessage.style.color = "red";
+            }
+        });
+</script>
+{% endblock %}
+
+
 {% endblock %}
