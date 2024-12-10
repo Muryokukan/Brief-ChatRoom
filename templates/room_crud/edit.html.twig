@@ -1,9 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Room{% endblock %}
+{% block title %}Modifier la Room{% endblock %}
 
 {% block body %}
-    <h1>Edit Room</h1>
 
     {{ include('room_crud/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
@@ -21,7 +20,7 @@
     <button id="copyButton">Copier le lien</button>
     <p id="statusMessage"></p>
 </div>
-
+<br>
 <form action="{{ path('crud_room_removeuser', {'roomId': roomId}) }}" method="post">
     <select id="userId" name="userId" required>
         <option value="">--Sélectionner un utilisateur à retirer--</option>
@@ -30,7 +29,7 @@
         {% endfor %}
     </select>
 
-    <input type="submit" value="Retirer la personne"/>
+    <input type="submit" value="Retirer la personne" class="cursor-pointer"/>
 </form>
 {# crud_room_removeuser #}
 
