@@ -313,6 +313,15 @@
     "symfonycasts/verify-email-bundle": {
         "version": "v1.17.2"
     },
+    "tilleuls/url-signer-bundle": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "20cec2e3050fe3d40d514b8c46ac934ab1f0580e"
+        }
+    },
     "twig/extra-bundle": {
         "version": "v3.16.0"
     }
