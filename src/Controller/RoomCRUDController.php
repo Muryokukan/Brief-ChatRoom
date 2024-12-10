@@ -30,8 +30,7 @@ final class RoomCRUDController extends AbstractController
         RoomRepository $roomRepo,
         UserRepository $userRepo,
         EntityManagerInterface $entityManager,
-        Security $security,
-        LoggerInterface $logger
+        Security $security
         ): Response
     {
         $userId = $request->query->get("userid");
