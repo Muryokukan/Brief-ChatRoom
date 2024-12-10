@@ -35,11 +35,11 @@ final class RoomCRUDController extends AbstractController
     {
         $userId = $request->query->get("userid");
         $roomId = $request->query->get("roomid");
+        
+        $room = $roomRepo->find($roomId);
+        $user = $userRepo->find($userId);
 
-        if ($security->getUser()->canAccessRoom($roomId)) {
-            $room = $roomRepo->find($roomId);
-            $user = $userRepo->find($userId);
-
+        if ($user->canAccessRoom($roomId)) {
             $room->addUser($security->getUser());
             $entityManager->flush();
 
