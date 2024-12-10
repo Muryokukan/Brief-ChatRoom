@@ -106,7 +106,7 @@ final class RoomCRUDController extends AbstractController
         $url = $this->generateUrl('crud_room_adduser', ['userid' => $security->getUser()->getId(), 'roomid' => $room->getId()]);
         $expiration = (new \DateTime('now'))->add(new \DateInterval('PT24H'));
         $invitelink = $urlSigner->sign($url, $expiration);
-        $invitelink = "https://$_SERVER[HTTP_HOST]".$invitelink;
+        $invitelink = "$_SERVER[HTTP_HOST]".$invitelink;
 
         $usersInRoom = $room->getUsers();
 
