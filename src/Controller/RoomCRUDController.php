@@ -102,7 +102,7 @@ final class RoomCRUDController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_room_c_r_u_d_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
 
         $url = $this->generateUrl('crud_room_adduser', ['userid' => $security->getUser()->getId(), 'roomid' => $room->getId()]);
