@@ -47,6 +47,30 @@ final class RoomCRUDController extends AbstractController
         return $this->redirectToRoute('app_home');
     }
 
+    #[Route('/room/{roomId}/removeuser/{userId}', name: 'crud_room_removeuser', methods: ['GET'])]
+    public function removeUser(
+        int $roomId,
+        int $userId,
+        RoomRepository $roomRepo,
+        UserRepository $userRepo,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        Security $security
+        ): Response
+    {   
+        $user = $userRepo->find($userId);
+        $room = $roomRepo->find($roomId);
+
+        if ($security->getUser()->canAccessRoom($roomId)) {
+            $room->removeUser($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_room_c_r_u_d_edit', ['id' => $roomId], Response::HTTP_SEE_OTHER);
+        }
+        
+        return $this->redirectToRoute('app_home');
+    }
+
     #[Route('/newroom', name: 'app_room_c_r_u_d_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
