@@ -36,7 +36,7 @@ final class RoomCRUDController extends AbstractController
         $userId = $request->query->get("userid");
         $roomId = $request->query->get("roomid");
 
-        if ($security->getUser()->canAccessRoom($room->getId())) {
+        if ($security->getUser()->canAccessRoom($roomId)) {
             $room = $roomRepo->find($roomId);
             $user = $userRepo->find($userId);
 
