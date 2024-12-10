@@ -12,10 +12,10 @@
     {{ include('room_crud/_delete_form.html.twig') }}
 
 
-<div class="flex justify-center items-center">
-    <h1>Invitez vos amis</h1>
+<div class="flex flex-col items-center justify-center space-y-4 h-200">
+    <h1>Invitez vos collègues</h1>
     <p>
-        Voici votre lien d'invitation :
+        Voici votre lien d'invitation : <br>
         <span id="inviteLink">{{ invitelink }}</span>
     </p>
     <button id="copyButton">Copier le lien</button>
