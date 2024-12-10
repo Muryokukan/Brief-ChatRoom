@@ -20,26 +20,34 @@ use App\Repository\UserRepository;
 
 use App\Form\Room1Type;
 
+use Psr\Log\LoggerInterface;
+
 final class RoomCRUDController extends AbstractController
 {
-    #[Route('/adduser', name: 'crud_room_adduser', methods: ['GET'], defaults:["_signed" => true])]
-    public function adduser(
+    #[Route('/joinroom', name: 'crud_room_adduser', methods: ['GET'], defaults:["_signed" => true])]
+    public function joinRoom(
         Request $request,
+        RoomRepository $roomRepo,
+        UserRepository $userRepo,
         EntityManagerInterface $entityManager,
-        Security $security
+        Security $security,
+        LoggerInterface $logger
         ): Response
     {
-        $userId = $request->query->get("userId");
+        $userId = $request->query->get("userid");
+        $roomId = $request->query->get("roomid");
 
-        $loggedUser = $security->getUser();
+        if ($security->getUser()->canAccessRoom($room->getId())) {
+            $room = $roomRepo->find($roomId);
+            $user = $userRepo->find($userId);
 
-        // if (!$loggedUser->canAccessRoom($roomId)) {
-        //     return $this->redirectToRoute('app_home');
-        // }
+            $room->addUser($security->getUser());
+            $entityManager->flush();
 
-        // TODO: Add adduser logic
-
-        return $this->redirectToRoute('app_room_c_r_u_d_edit', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_room', ['roomId' => $roomId], Response::HTTP_SEE_OTHER);
+        }
+        
+        return $this->redirectToRoute('app_home');
     }
 
     #[Route('/newroom', name: 'app_room_c_r_u_d_new', methods: ['GET', 'POST'])]
@@ -98,18 +106,8 @@ final class RoomCRUDController extends AbstractController
             return $this->redirectToRoute('app_room_c_r_u_d_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        // Or $url = $this->generateUrl('secured_document', ['id' => 42], UrlGeneratorInterface::ABSOLUTE_URL);
-        $url = $this->generateUrl('crud_room_adduser', ['userid' => 2, 'roomid' => 3]);
-        // Will expire after one hour.
+        $url = $this->generateUrl('crud_room_adduser', ['userid' => $security->getUser()->getId(), 'roomid' => $room->getId()]);
         $expiration = (new \DateTime('now'))->add(new \DateInterval('PT24H'));
-        // An integer can also be used for the expiration: it will correspond to a number of seconds. For 1 hour:
-        // $expiration = 3600;
-
-        // Not passing the second argument will use the default expiration time (86400 seconds by default).
-        // return $this->urlSigner->sign($url);
-
-        // Will return a path like this: /documents/42?expires=1611316656&signature=82f6958bd5c96fda58b7a55ade7f651fadb51e12171d58ed271e744bcc7c85c3
-        // Or a URL depending on what has been signed before.
         $invitelink = $urlSigner->sign($url, $expiration);
 
 
