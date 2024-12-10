@@ -20,13 +20,6 @@ use App\Form\Room1Type;
 #[Route('/room')]
 final class RoomCRUDController extends AbstractController
 {
-    #[Route('/all',
-    name: 'app_room_c_r_u_d_index', methods: ['GET'])]
-    public function index(RoomRepository $roomRepository): Response
-    {
-        return $this->redirectToRoute('app_home');
-    }
-
     #[Route('/new', name: 'app_room_c_r_u_d_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,

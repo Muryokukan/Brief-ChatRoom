@@ -5,9 +5,9 @@
 {% block body %}
     <h1>Edit Room</h1>
 
-    {{ include('room_crud/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('room_crud/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-    <a href="{{ path('app_room_c_r_u_d_index') }}">back to list</a>
+    <a href="{{ path('app_home') }}">Retour</a>
 
     {{ include('room_crud/_delete_form.html.twig') }}
 {% endblock %}
