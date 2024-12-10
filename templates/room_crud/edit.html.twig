@@ -23,7 +23,7 @@
 </div>
 
 <form action="{{ path('crud_room_removeuser', {'roomId': roomId}) }}" method="post">
-    <select id="userId" name="userId">
+    <select id="userId" name="userId" required>
         <option value="">--Sélectionner un utilisateur à retirer--</option>
         {% for user in usersInRoom %}
         <option value="{{ user.id }}">{{ user.nickname ~ "#" ~ user.id }}</option>
