@@ -20,8 +20,6 @@ use App\Repository\UserRepository;
 
 use App\Form\Room1Type;
 
-use Psr\Log\LoggerInterface;
-
 final class RoomCRUDController extends AbstractController
 {
     #[Route('/joinroom', name: 'crud_room_adduser', methods: ['GET'], defaults:["_signed" => true])]
